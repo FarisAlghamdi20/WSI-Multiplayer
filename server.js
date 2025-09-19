@@ -522,11 +522,11 @@ class Game {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+    // User connected
 
     // Create game
     socket.on('createGame', (data) => {
-        console.log('Creating game for player:', data.playerName);
+        // Creating game
         const gameCode = generateGameCode();
         const game = new Game(gameCode, socket.id);
         
@@ -541,7 +541,7 @@ io.on('connection', (socket) => {
         players.set(socket.id, { gameCode, isHost: true });
         
         socket.join(gameCode);
-        console.log('Game created with code:', gameCode);
+        // Game created
         socket.emit('gameCreated', { gameCode, isHost: true });
     });
 
@@ -769,7 +769,7 @@ io.on('connection', (socket) => {
 
     // Disconnect
     socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
+        // User disconnected
         
         const player = players.get(socket.id);
         if (!player) return;

@@ -245,7 +245,7 @@ class GameState {
         this.initAudioOnInteraction();
         
         this.socket.on('connect', () => {
-            console.log('Connected to server');
+            // Connected to server
             this.hideLoading();
             this.showScreen('landing');
             this.showToast('تم الاتصال بالخادم!', 'success');
@@ -266,17 +266,17 @@ class GameState {
         });
 
         this.socket.on('disconnect', (reason) => {
-            console.log('Disconnected from server:', reason);
+            // Disconnected from server
             this.resetGameState();
             this.showScreen('landing');
             this.showToast('فُقد الاتصال. يرجى تحديث الصفحة لإعادة الاتصال.', 'error');
         });
 
         this.socket.on('gameCreated', (data) => {
-            console.log('Received gameCreated event:', data);
+            // Received gameCreated event
             this.gameCode = data.gameCode;
             this.isHost = true;
-            console.log('Host status set to:', this.isHost);
+            // Host status set
             
             // Reset sound manager for new game
             this.soundManager.reset();
@@ -318,16 +318,16 @@ class GameState {
         });
 
         this.socket.on('gameJoined', (data) => {
-            console.log('Received gameJoined event:', data);
-            console.log('Players data type:', typeof data.players);
-            console.log('Players data:', data.players);
+            // Received gameJoined event
+            // Players data type checked
+            // Players data processed
             
             this.gameCode = data.gameCode;
             this.isHost = data.isHost;
             
             // Reset sound manager for new game
             this.soundManager.reset();
-            console.log('Host status set to:', this.isHost);
+            // Host status set
             
             // Convert players object to Map safely
             this.players = new Map();
@@ -335,7 +335,7 @@ class GameState {
                 Object.entries(data.players).forEach(([playerId, player]) => {
                     this.players.set(playerId, player);
                 });
-                console.log('Converted players to Map, count:', this.players.size);
+                // Converted players to Map
             } else {
                 console.error('Invalid players data received:', data.players);
             }
@@ -383,7 +383,7 @@ class GameState {
         });
 
         this.socket.on('playerReady', (data) => {
-            console.log('Player ready status changed:', data);
+            // Player ready status changed
             const player = this.players.get(data.playerId);
             if (player) {
                 player.ready = data.ready;
@@ -401,7 +401,7 @@ class GameState {
         });
 
         this.socket.on('gameStarted', (data) => {
-            console.log('Game started!');
+            // Game started
             this.gameStarted = true;
             this.currentRound = 0;
             this.showScreen('game');
@@ -424,7 +424,7 @@ class GameState {
         });
 
         this.socket.on('questionData', (data) => {
-            console.log('Received question data:', data);
+            // Received question data
             this.currentQuestion = data;
             this.answered = false;
             this.timeLeft = 15;
@@ -456,12 +456,12 @@ class GameState {
         });
 
         this.socket.on('gameOver', (data) => {
-            console.log('Game over received:', data);
+            // Game over received
             this.showGameOver(data.finalScores);
         });
 
         this.socket.on('gameReset', (data) => {
-            console.log('Game reset received');
+            // Game reset received
             this.gameStarted = false;
             this.currentRound = 0;
             this.answered = false;
@@ -538,17 +538,17 @@ class GameState {
 
     // UI Management
     showScreen(screenId) {
-        console.log('Switching to screen:', screenId);
+        // Switch to target screen
         document.querySelectorAll('.screen').forEach(screen => {
             screen.classList.remove('active');
-            console.log('Removed active from:', screen.id);
+            // Remove active class from all screens
         });
         const targetScreen = document.getElementById(screenId);
         if (targetScreen) {
             targetScreen.classList.add('active');
-            console.log('Screen switched to:', screenId);
-            console.log('Target screen classes:', targetScreen.className);
-            console.log('Target screen display:', window.getComputedStyle(targetScreen).display);
+            // Screen successfully switched
+            // Target screen classes set
+            // Target screen display confirmed
         } else {
             console.error('Screen not found:', screenId);
         }
@@ -565,7 +565,7 @@ class GameState {
         const overlay = document.getElementById('loadingOverlay');
         if (overlay) {
             overlay.classList.remove('active');
-            console.log('Loading overlay hidden');
+            // Loading overlay hidden
         }
     }
 
@@ -588,7 +588,7 @@ class GameState {
     }
 
     showAuthorInfo(author, authorInfo) {
-        console.log('showAuthorInfo called with:', author, authorInfo);
+        // showAuthorInfo called
         
         // Create author info display
         const authorInfoContainer = document.createElement('div');
@@ -602,7 +602,7 @@ class GameState {
         
         // Add to the game content area
         const gameContent = document.querySelector('.game-content');
-        console.log('Game content element:', gameContent);
+        // Game content element found
         
         if (gameContent) {
             gameContent.appendChild(authorInfoContainer);
@@ -897,7 +897,7 @@ class GameState {
     selectAnswer(answerIndex) {
         if (this.answered && !this.gameSettings.allowAnswerChanges) return;
         
-        console.log('Selecting answer:', answerIndex);
+        // Selecting answer
         this.answered = true;
         this.socket.emit('answerSelected', { answerIndex });
         
@@ -919,7 +919,7 @@ class GameState {
     }
 
     showQuestionResults(data) {
-        console.log('Showing question results:', data);
+        // Showing question results
         const answers = document.querySelectorAll('.answer-option');
         const correctIndex = data.correctAnswer;
         const playerAnswer = data.playerAnswers[this.socket.id];
@@ -984,7 +984,7 @@ class GameState {
         
         // Display author info if available
         if (data.authorInfo && data.question) {
-            console.log('Calling showAuthorInfo with:', data.question.author, data.authorInfo);
+            // Calling showAuthorInfo
             this.showAuthorInfo(data.question.author, data.authorInfo);
         } else {
         }
@@ -1050,7 +1050,7 @@ class GameState {
     }
 
     showGameOver(finalScores) {
-        console.log('Game over! Final scores:', finalScores);
+        // Game over - Final scores
         this.showScreen('gameOver');
         
         // Force game over screen to be visible at top of page
@@ -1335,7 +1335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isCurrentlyReady = readyBtn.textContent === 'غير جاهز';
         const newReadyState = !isCurrentlyReady;
         
-        console.log('Toggling ready state to:', newReadyState);
+        // Toggling ready state
         game.socket.emit('toggleReady', { ready: newReadyState });
         
         // Update UI immediately for better UX
