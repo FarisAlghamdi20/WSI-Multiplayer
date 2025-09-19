@@ -795,6 +795,14 @@ class GameState {
                 }
             });
             
+            // Add touch support for mobile
+            answerOption.addEventListener('touchend', (e) => {
+                if (!this.answered) {
+                    e.preventDefault();
+                    this.selectAnswer(index);
+                }
+            });
+            
             answersList.appendChild(answerOption);
         });
         
@@ -1198,6 +1206,65 @@ class GameState {
     // Initialize Game
 const game = new GameState();
 
+// Helper function to add both click and touch event support
+function addButtonTouchSupport(elementId, handler) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.addEventListener('click', handler);
+        element.addEventListener('touchend', (e) => {
+            // Don't prevent default for input fields
+            if (!e.target.closest('input, textarea, select')) {
+                e.preventDefault();
+            }
+            handler();
+        });
+    }
+}
+
+// Mobile input optimization
+function addMobileInputSupport() {
+    // Ensure input fields work properly on mobile
+    const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea');
+    
+    inputs.forEach(input => {
+        // Prevent zoom on focus for mobile devices
+        input.addEventListener('focus', () => {
+            // Force viewport to prevent zoom
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            }
+        });
+        
+        // Restore normal viewport after focus
+        input.addEventListener('blur', () => {
+            const viewport = document.querySelector('meta[name="viewport"]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
+            }
+        });
+        
+        // Ensure input is focusable on touch
+        input.addEventListener('touchstart', (e) => {
+            // Don't prevent default for inputs to allow focus
+            e.stopPropagation();
+        }, { passive: true });
+        
+        // Ensure input can be focused on touchend
+        input.addEventListener('touchend', (e) => {
+            // Don't prevent default for inputs
+            e.stopPropagation();
+            // Focus the input
+            input.focus();
+        }, { passive: false });
+        
+        // Allow text selection in inputs
+        input.style.webkitUserSelect = 'text';
+        input.style.userSelect = 'text';
+        input.style.webkitTouchCallout = 'default';
+    });
+}
+
 // Mobile touch optimizations
 function addTouchSupport() {
     // Add touch event listeners for answer options
@@ -1217,7 +1284,8 @@ function addTouchSupport() {
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (e) => {
         const now = (new Date()).getTime();
-        if (now - lastTouchEnd <= 300) {
+        // Only prevent default for non-button and non-input elements to avoid blocking interactions
+        if (now - lastTouchEnd <= 300 && !e.target.closest('button, .btn, input, textarea, select')) {
             e.preventDefault();
         }
         lastTouchEnd = now;
@@ -1244,31 +1312,69 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize mobile touch support
     addTouchSupport();
     
+    // Mobile input optimization
+    addMobileInputSupport();
+    
     // Landing page events
-    document.getElementById('createGameBtn').addEventListener('click', () => {
+    const createGameBtn = document.getElementById('createGameBtn');
+    const joinGameBtn = document.getElementById('joinGameBtn');
+    
+    // Add both click and touch event listeners for mobile compatibility
+    createGameBtn.addEventListener('click', () => {
+        document.getElementById('createModal').classList.add('active');
+    });
+    createGameBtn.addEventListener('touchend', (e) => {
+        if (!e.target.closest('input, textarea, select')) {
+            e.preventDefault();
+        }
         document.getElementById('createModal').classList.add('active');
     });
     
-    document.getElementById('joinGameBtn').addEventListener('click', () => {
+    joinGameBtn.addEventListener('click', () => {
+        document.getElementById('joinModal').classList.add('active');
+    });
+    joinGameBtn.addEventListener('touchend', (e) => {
+        if (!e.target.closest('input, textarea, select')) {
+            e.preventDefault();
+        }
         document.getElementById('joinModal').classList.add('active');
     });
     
     // Create modal events
-    document.getElementById('closeCreateModal').addEventListener('click', () => {
+    const closeCreateModal = document.getElementById('closeCreateModal');
+    closeCreateModal.addEventListener('click', () => {
+        document.getElementById('createModal').classList.remove('active');
+    });
+    closeCreateModal.addEventListener('touchend', (e) => {
+        e.preventDefault();
         document.getElementById('createModal').classList.remove('active');
     });
     
     // Game settings modal events
-    document.getElementById('closeGameSettingsModal').addEventListener('click', () => {
+    addButtonTouchSupport('closeGameSettingsModal', () => {
         document.getElementById('gameSettingsModal').classList.remove('active');
     });
     
+    addButtonTouchSupport('saveGameSettings', () => {
+        // Save game settings logic here
+        // For now, just close the modal
+        document.getElementById('gameSettingsModal').classList.remove('active');
+        game.showToast('تم حفظ الإعدادات', 'success');
+    });
+    
     // Join modal events
-    document.getElementById('closeJoinModal').addEventListener('click', () => {
+    const closeJoinModal = document.getElementById('closeJoinModal');
+    closeJoinModal.addEventListener('click', () => {
+        document.getElementById('joinModal').classList.remove('active');
+    });
+    closeJoinModal.addEventListener('touchend', (e) => {
+        e.preventDefault();
         document.getElementById('joinModal').classList.remove('active');
     });
     
-    document.getElementById('createGameConfirm').addEventListener('click', () => {
+    const createGameConfirm = document.getElementById('createGameConfirm');
+    
+    const handleCreateGame = () => {
         const playerName = document.getElementById('createPlayerName').value.trim();
         const selectedAvatar = document.querySelector('#createModal .avatar-option.selected');
         
@@ -1293,9 +1399,17 @@ document.addEventListener('DOMContentLoaded', () => {
         game.showLoading('جاري إنشاء اللعبة...');
         game.socket.emit('createGame', { playerName: game.playerName, playerAvatar: game.playerAvatar });
         document.getElementById('createModal').classList.remove('active');
+    };
+    
+    createGameConfirm.addEventListener('click', handleCreateGame);
+    createGameConfirm.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleCreateGame();
     });
     
-    document.getElementById('joinGameConfirm').addEventListener('click', () => {
+    const joinGameConfirm = document.getElementById('joinGameConfirm');
+    
+    const handleJoinGame = () => {
         const gameCode = document.getElementById('gameCode').value.trim().toUpperCase();
         const playerName = document.getElementById('playerName').value.trim();
         const selectedAvatar = document.querySelector('#joinModal .avatar-option.selected');
@@ -1327,10 +1441,16 @@ document.addEventListener('DOMContentLoaded', () => {
         game.showLoading('جاري الانضمام للعبة...');
         game.socket.emit('joinGame', { gameCode, playerName, playerAvatar: game.playerAvatar });
         document.getElementById('joinModal').classList.remove('active');
+    };
+    
+    joinGameConfirm.addEventListener('click', handleJoinGame);
+    joinGameConfirm.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleJoinGame();
     });
     
     // Lobby events
-    document.getElementById('readyBtn').addEventListener('click', () => {
+    addButtonTouchSupport('readyBtn', () => {
         const readyBtn = document.getElementById('readyBtn');
         const isCurrentlyReady = readyBtn.textContent === 'غير جاهز';
         const newReadyState = !isCurrentlyReady;
@@ -1350,11 +1470,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    document.getElementById('startGameBtn').addEventListener('click', () => {
+    addButtonTouchSupport('startGameBtn', () => {
         game.socket.emit('startGame');
     });
     
-    document.getElementById('soundToggleBtn').addEventListener('click', () => {
+    addButtonTouchSupport('soundToggleBtn', () => {
         const enabled = game.soundManager.toggle();
         const btn = document.getElementById('soundToggleBtn');
         btn.textContent = enabled ? '🔊 Sound' : '🔇 Sound';
@@ -1365,7 +1485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     // Chat events
-    document.getElementById('sendMessageBtn').addEventListener('click', () => {
+    addButtonTouchSupport('sendMessageBtn', () => {
         game.sendChatMessage();
     });
     
@@ -1377,7 +1497,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     // Copy game code functionality
-    document.getElementById('copyCodeBtn').addEventListener('click', () => {
+    addButtonTouchSupport('copyCodeBtn', () => {
         navigator.clipboard.writeText(game.gameCode).then(() => {
             game.showToast('تم نسخ رمز اللعبة إلى الحافظة!', 'success');
         }).catch(() => {
@@ -1393,31 +1513,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Game over events
-    document.getElementById('playAgainBtn').addEventListener('click', () => {
+    addButtonTouchSupport('playAgainBtn', () => {
         game.socket.emit('playAgain');
     });
     
-    document.getElementById('newGameBtn').addEventListener('click', () => {
+    addButtonTouchSupport('newGameBtn', () => {
         game.resetGameState();
         game.showScreen('landing');
     });
     
-    document.getElementById('exitGameBtn').addEventListener('click', () => {
+    addButtonTouchSupport('exitGameBtn', () => {
         game.resetGameState();
         game.showScreen('landing');
     });
     
     // Results events
-    document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+    addButtonTouchSupport('nextQuestionBtn', () => {
         game.startNextQuestion();
     });
     
-    document.getElementById('backToLobbyBtn').addEventListener('click', () => {
+    addButtonTouchSupport('backToLobbyBtn', () => {
         game.showScreen('lobby');
     });
     
     // Avatar selection
-    document.addEventListener('click', (e) => {
+    const handleAvatarSelection = (e) => {
         if (e.target.closest('.avatar-option')) {
             const avatarOption = e.target.closest('.avatar-option');
             const modal = avatarOption.closest('.modal');
@@ -1430,6 +1550,12 @@ document.addEventListener('DOMContentLoaded', () => {
             // Select current option
             avatarOption.classList.add('selected');
         }
+    };
+    
+    document.addEventListener('click', handleAvatarSelection);
+    document.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleAvatarSelection(e);
     });
     
     // Close modals when clicking outside
@@ -1440,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Leave game buttons using event delegation
-    document.addEventListener('click', (e) => {
+    const handleLeaveGame = (e) => {
         if (e.target.id === 'lobbyLeaveGameBtn' || e.target.id === 'gameLeaveGameBtn') {
             if (confirm('Are you sure you want to leave the game?')) {
                 // Stop any playing sounds
@@ -1455,10 +1581,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 game.showScreen('landing');
             }
         }
+    };
+    
+    document.addEventListener('click', handleLeaveGame);
+    document.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        handleLeaveGame(e);
     });
     
     // Game chat events
-    document.getElementById('sendGameMessageBtn').addEventListener('click', () => {
+    addButtonTouchSupport('sendGameMessageBtn', () => {
         game.sendMessage('game');
     });
     
@@ -1472,9 +1604,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Mobile optimizations
     if (game.isMobile) {
-        // Prevent double-tap zoom
+        // Prevent double-tap zoom for interactive elements (but not inputs)
         document.addEventListener('touchend', (e) => {
-            if (e.target.closest('.btn, .answer-option, .avatar-option')) {
+            if (e.target.closest('.btn, .answer-option, .avatar-option') && !e.target.closest('input, textarea, select')) {
                 e.preventDefault();
             }
         }, { passive: false });
