@@ -20,7 +20,7 @@
     "arabic",
     "saudi"
   ],
-  "author": "Your Name",
+  "author": "Faris Alghamdi",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.6.1",
@@ -36,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/who-said-it-multiplayer.git"
+    "url": "https://github.com/FarisAlghamdi20/WSI-Multiplayer.git"
   },
-  "homepage": "https://your-app-name.railway.app"
+  "homepage": "https://github.com/FarisAlghamdi20/WSI-Multiplayer"
 }
