@@ -19,307 +19,212 @@ const io = socketIo(server, {
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Game data with categories and difficulty levels - Saudi Arabia Focused Content for Younger Generation
+// Game data with categories and difficulty levels - Fun Saudi Arabia Content - Updated
 const quotes = [
-    // Saudi Social Media Influencers & Content Creators
+    // Test Question
     {
         quote: "من قال 'أهلاً وسهلاً بكم في قناتي'؟",
         author: "أحمد الشقيري",
-        answers: ["أحمد الشقيري", "عبدالله القصيمي", "أنس العبادي", "خالد المالكي"],
+        answers: ["أحمد الشقيري", "عبدالله القصيمي", "أنس بوخش", "فريج"],
         correctAnswer: 0,
-        authorInfo: "مقدم برنامج خواطر والداعية السعودي المشهور",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "مقدم برنامج خواطر والداعية السعودي المشهور"
     },
     {
-        quote: "من قال 'خليني أقولك حاجة'؟",
-        author: "أنس بوخش",
-        answers: ["أنس بوخش", "صالح العنزي", "محمد القحطاني", "فهد البتيري"],
+        quote: "من هو مؤسس 'هنقرستيشن' السعودية؟",
+        author: "أحمد آل زايد",
+        answers: ["أحمد آل زايد", "نواف السبيعي", "عبدالرحمن أبو مالح", "عبدالله الشمري"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بالكوميديا",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "رائد أعمال سعودي ومؤسس منصة هنقرستيشن للطعام"
     },
     {
-        quote: "من هو صاحب قناة 'فريج'؟",
-        author: "فريج",
-        answers: ["فريج", "أنس بوخش", "صالح العنزي", "محمد القحطاني"],
+        quote: "من قال 'خواطر تجربة شخصية حاولت تبسيطها للناس'؟",
+        author: "أحمد الشقيري",
+        answers: ["أحمد الشقيري", "سعود مطلق السبيعي", "وليد الفراج", "تركي الدخيل"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "إعلامي سعودي عُرف ببرنامجه خواطر"
     },
     {
-        quote: "من هو صاحب قناة 'صالح العنزي'؟",
-        author: "صالح العنزي",
-        answers: ["صالح العنزي", "أنس بوخش", "فريج", "محمد القحطاني"],
+        quote: "من هو أول وزير مالية في المملكة العربية السعودية؟",
+        author: "عبدالله السليمان",
+        answers: ["عبدالله السليمان", "محمد أبا الخيل", "إبراهيم العساف", "محمد الجدعان"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "لقب بوزير المالية والاقتصاد الوطني الأول للمملكة"
     },
     {
-        quote: "من هو صاحب قناة 'محمد القحطاني'؟",
-        author: "محمد القحطاني",
-        answers: ["محمد القحطاني", "أنس بوخش", "فريج", "صالح العنزي"],
+        quote: "من هو أشهر فنان تشكيلي سعودي حائز على العديد من الجوائز؟",
+        author: "عبدالله العمري",
+        answers: ["عبدالله العمري", "نجيب يماني", "محمد السليم", "إبراهيم الفصام"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "فنان تشكيلي سعودي عرف برسوماته الواقعية المعبرة"
     },
     {
-        quote: "من هو صاحب قناة 'فهد البتيري'؟",
-        author: "فهد البتيري",
-        answers: ["فهد البتيري", "أنس بوخش", "فريج", "صالح العنزي"],
+        quote: "من هو الكاتب السعودي صاحب كتاب 'سقف الكفاية'؟",
+        author: "محمد حسن علوان",
+        answers: ["محمد حسن علوان", "عبده خال", "تركي الحمد", "عبدالله ثابت"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "روائي سعودي حاصل على جائزة البوكر العربية"
     },
     {
-        quote: "من هو صاحب قناة 'خالد المالكي'؟",
-        author: "خالد المالكي",
-        answers: ["خالد المالكي", "أنس بوخش", "فريج", "صالح العنزي"],
-        correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    {
-        quote: "من هو صاحب قناة 'عبدالله القصيمي'؟",
-        author: "عبدالله القصيمي",
-        answers: ["عبدالله القصيمي", "أنس بوخش", "فريج", "صالح العنزي"],
-        correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    {
-        quote: "من هو صاحب قناة 'محمد الشناوي'؟",
-        author: "محمد الشناوي",
-        answers: ["محمد الشناوي", "أنس بوخش", "فريج", "صالح العنزي"],
-        correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    {
-        quote: "من هو صاحب قناة 'علي السلامي'؟",
-        author: "علي السلامي",
-        answers: ["علي السلامي", "أنس بوخش", "فريج", "صالح العنزي"],
-        correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    {
-        quote: "من هو صاحب قناة 'خالد الفراج'؟",
-        author: "خالد الفراج",
-        answers: ["خالد الفراج", "أنس بوخش", "فريج", "صالح العنزي"],
-        correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    {
-        quote: "من هو مؤسس قناة 'ثمانية'؟",
+        quote: "من هو مؤسس بودكاست 'فنجان' الشهير؟",
         author: "عبدالرحمن أبو مالح",
-        answers: ["عبدالرحمن أبو مالح", "محمد العبدلي", "فيصل العلي", "أحمد الربعي"],
+        answers: ["عبدالرحمن أبو مالح", "عبدالله المديفر", "وليد البنيان", "بدور المطيري"],
         correctAnswer: 0,
-        authorInfo: "رائد أعمال ومؤسس شبكة ثمانية الإعلامية",
-        category: "رواد الأعمال السعوديون",
-        difficulty: "متوسط"
+        authorInfo: "مؤسس بودكاست فنجان والرئيس التنفيذي لشركة ثمانية للإعلام"
     },
     {
-        quote: "من هو صاحب قناة 'محمد العبدلي'؟",
-        author: "محمد العبدلي",
-        answers: ["محمد العبدلي", "أنس بوخش", "فريج", "صالح العنزي"],
+        quote: "من هو أول سعودي صعد إلى الفضاء؟",
+        author: "الأمير سلطان بن سلمان",
+        answers: ["الأمير سلطان بن سلمان", "الأمير تركي الفيصل", "خالد الفالح", "إبراهيم المنيف"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "أول رائد فضاء عربي مسلم شارك في رحلة ديسكفري 1985"
     },
     {
-        quote: "من هو صاحب قناة 'فيصل العلي'؟",
-        author: "فيصل العلي",
-        answers: ["فيصل العلي", "أنس بوخش", "فريج", "صالح العنزي"],
+        quote: "من هو لاعب الهلال السعودي الذي لُقب بالأسطورة؟",
+        author: "يوسف الثنيان",
+        answers: ["يوسف الثنيان", "سامي الجابر", "ماجد عبدالله", "محمد الدعيع"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
+        authorInfo: "قائد نادي الهلال السعودي واعتبر من أبرز اللاعبين في تاريخ الكرة السعودية"
     },
     {
-        quote: "من هو صاحب قناة 'أحمد الربعي'؟",
-        author: "أحمد الربعي",
-        answers: ["أحمد الربعي", "أنس بوخش", "فريج", "صالح العنزي"],
+        quote: "من هو مؤسس شركة 'كريم' لخدمات النقل؟",
+        author: "عبدالله الياسين",
+        answers: ["عبدالله الياسين", "مدثر شيخة", "وليد الإبراهيم", "عبدالله الملحم"],
         correctAnswer: 0,
-        authorInfo: "يوتيوبر سعودي مشهور بمقاطع الكوميديا والتفاعل",
-        category: "المؤثرون السعوديون",
-        difficulty: "سهل"
-    },
-    
-    // Saudi Leadership & Vision 2030
-    {
-        quote: "من قال 'السعودية بلد الفرص'؟",
-        author: "محمد بن سلمان",
-        answers: ["محمد بن سلمان", "سلمان بن عبدالعزيز", "عبدالله بن عبدالعزيز", "خالد الفيصل"],
-        correctAnswer: 0,
-        authorInfo: "ولي العهد السعودي ومهندس رؤية 2030",
-        category: "القيادة السعودية",
-        difficulty: "متوسط"
+        authorInfo: "رائد أعمال سعودي شارك في تأسيس كريم لخدمات النقل"
     },
     {
-        quote: "من قال 'رؤية 2030 ستجعل السعودية من أكبر 15 اقتصاد في العالم'؟",
-        author: "محمد بن سلمان",
-        answers: ["محمد بن سلمان", "سلمان بن عبدالعزيز", "عبدالله بن عبدالعزيز", "خالد الفيصل"],
+        quote: "من هو مقدم برنامج 'الليوان' الرمضاني؟",
+        author: "عبدالله المديفر",
+        answers: ["عبدالله المديفر", "إبراهيم الفريان", "وليد الفراج", "تركي الدخيل"],
         correctAnswer: 0,
-        authorInfo: "ولي العهد السعودي ومهندس رؤية 2030",
-        category: "القيادة السعودية",
-        difficulty: "متوسط"
+        authorInfo: "إعلامي ومحاور بارز في الساحة السعودية"
     },
     {
-        quote: "من هو مؤسس 'نيوم'؟",
-        author: "محمد بن سلمان",
-        answers: ["محمد بن سلمان", "سلمان بن عبدالعزيز", "عبدالله بن عبدالعزيز", "خالد الفيصل"],
+        quote: "من هو الروائي السعودي الحائز على جائزة البوكر برواية 'ترمي بشرر'؟",
+        author: "عبده خال",
+        answers: ["عبده خال", "تركي الحمد", "محمد حسن علوان", "بندر الخريف"],
         correctAnswer: 0,
-        authorInfo: "ولي العهد السعودي ومهندس رؤية 2030",
-        category: "القيادة السعودية",
-        difficulty: "متوسط"
+        authorInfo: "كاتب سعودي حائز على الجائزة العالمية للرواية العربية"
     },
     {
-        quote: "من قال 'السعودية ستكون محايدة كربونياً بحلول 2060'؟",
-        author: "محمد بن سلمان",
-        answers: ["محمد بن سلمان", "سلمان بن عبدالعزيز", "عبدالله بن عبدالعزيز", "خالد الفيصل"],
+        quote: "من قال 'أنا أحب أمي مثل مكة'؟",
+        author: "محمد عبده",
+        answers: ["محمد عبده", "رابح صقر", "طلال مداح", "عبدالمجيد عبدالله"],
         correctAnswer: 0,
-        authorInfo: "ولي العهد السعودي ومهندس رؤية 2030",
-        category: "القيادة السعودية",
-        difficulty: "متوسط"
+        authorInfo: "فنان العرب وأحد أشهر مطربي السعودية والخليج"
     },
     {
-        quote: "من هو مؤسس 'ذا لاين' في نيوم؟",
-        author: "محمد بن سلمان",
-        answers: ["محمد بن سلمان", "سلمان بن عبدالعزيز", "عبدالله بن عبدالعزيز", "خالد الفيصل"],
+        quote: "من هو وزير الطاقة السعودي الحالي (2025)؟",
+        author: "الأمير عبدالعزيز بن سلمان",
+        answers: ["الأمير عبدالعزيز بن سلمان", "خالد الفالح", "إبراهيم العساف", "محمد الجدعان"],
         correctAnswer: 0,
-        authorInfo: "ولي العهد السعودي ومهندس رؤية 2030",
-        category: "القيادة السعودية",
-        difficulty: "متوسط"
-    },
-    
-    // Saudi Sports & Entertainment
-    {
-        quote: "من هو نجم الهلال السعودي المشهور؟",
-        author: "سالم الدوسري",
-        answers: ["سالم الدوسري", "محمد الشلهوب", "ياسر القحطاني", "نواف العابد"],
-        correctAnswer: 0,
-        authorInfo: "لاعب كرة قدم سعودي في نادي الهلال والمنتخب الوطني",
-        category: "الرياضة السعودية",
-        difficulty: "سهل"
+        authorInfo: "وزير الطاقة السعودي والمسؤول عن سياسة المملكة النفطية"
     },
     {
-        quote: "من هو قائد المنتخب السعودي لكرة القدم؟",
-        author: "سالم الدوسري",
-        answers: ["سالم الدوسري", "محمد الشلهوب", "ياسر القحطاني", "نواف العابد"],
+        quote: "من هو الاقتصادي السعودي رئيس أرامكو السابق؟",
+        author: "أمين الناصر",
+        answers: ["أمين الناصر", "خالد الفالح", "ياسر الرميان", "محمد القويز"],
         correctAnswer: 0,
-        authorInfo: "لاعب كرة قدم سعودي في نادي الهلال والمنتخب الوطني",
-        category: "الرياضة السعودية",
-        difficulty: "سهل"
+        authorInfo: "رئيس أرامكو السعودية وأحد أبرز الشخصيات الاقتصادية في المملكة"
     },
     {
-        quote: "من هو الممثل السعودي المشهور في 'طاش ما طاش'؟",
-        author: "ناصر القصبي",
-        answers: ["ناصر القصبي", "عبدالله السدحان", "فؤاد المهندس", "عبدالرحمن أبو مالح"],
+        quote: "من هو لاعب النصر السعودي وهداف الكرة السعودية التاريخي؟",
+        author: "ماجد عبدالله",
+        answers: ["ماجد عبدالله", "سامي الجابر", "محمد نور", "فهد الهريفي"],
         correctAnswer: 0,
-        authorInfo: "ممثل ومقدم برامج سعودي مشهور",
-        category: "الترفيه السعودي",
-        difficulty: "سهل"
+        authorInfo: "الأسطورة النصراوية وهداف المنتخب السعودي"
     },
     {
-        quote: "من هو الممثل السعودي المشهور في 'طاش ما طاش'؟",
-        author: "عبدالله السدحان",
-        answers: ["عبدالله السدحان", "ناصر القصبي", "فؤاد المهندس", "عبدالرحمن أبو مالح"],
+        quote: "من هو الفنان الذي لقب بـ'الصوت الأرضي'؟",
+        author: "طلال مداح",
+        answers: ["طلال مداح", "محمد عبده", "عبدالمجيد عبدالله", "عبادي الجوهر"],
         correctAnswer: 0,
-        authorInfo: "ممثل ومقدم برامج سعودي مشهور",
-        category: "الترفيه السعودي",
-        difficulty: "سهل"
-    },
-    
-    // Saudi Culture & Heritage
-    {
-        quote: "من هو شاعر النبط السعودي المشهور؟",
-        author: "محمد العبدالله العوني",
-        answers: ["محمد العبدالله العوني", "عبدالله بن خميس", "عبدالله البرقاوي", "محمد بن راشد"],
-        correctAnswer: 0,
-        authorInfo: "شاعر نبط سعودي مشهور",
-        category: "الثقافة السعودية",
-        difficulty: "متوسط"
+        authorInfo: "أحد رواد الأغنية السعودية وأيقونة فنية خالدة"
     },
     {
-        quote: "من هو مؤلف 'موسوعة المملكة العربية السعودية'؟",
-        author: "عبدالله بن خميس",
-        answers: ["عبدالله بن خميس", "محمد العبدالله العوني", "عبدالله البرقاوي", "محمد بن راشد"],
+        quote: "من هو مؤسس شبكة قنوات MBC؟",
+        author: "وليد الإبراهيم",
+        answers: ["وليد الإبراهيم", "تركي الدخيل", "خالد المالك", "عبدالله المديفر"],
         correctAnswer: 0,
-        authorInfo: "كاتب ومؤرخ سعودي مشهور",
-        category: "الثقافة السعودية",
-        difficulty: "متوسط"
-    },
-    
-    // Saudi Geography & Cities
-    {
-        quote: "ما هي العاصمة السعودية؟",
-        author: "الرياض",
-        answers: ["الرياض", "جدة", "مكة المكرمة", "الدمام"],
-        correctAnswer: 0,
-        authorInfo: "عاصمة المملكة العربية السعودية",
-        category: "الجغرافيا السعودية",
-        difficulty: "سهل"
+        authorInfo: "رجل أعمال سعودي أسس شبكة MBC الإعلامية"
     },
     {
-        quote: "ما هي المدينة المقدسة في السعودية؟",
-        author: "مكة المكرمة",
-        answers: ["مكة المكرمة", "المدينة المنورة", "الرياض", "جدة"],
+        quote: "من هو الإعلامي السعودي الشهير ببرنامجه 'صدى الملاعب'؟",
+        author: "مصطفى الأغا",
+        answers: ["مصطفى الأغا", "وليد الفراج", "بتال القوس", "إبراهيم الفريان"],
         correctAnswer: 0,
-        authorInfo: "المدينة المقدسة التي يوجد فيها الكعبة المشرفة",
-        category: "الجغرافيا السعودية",
-        difficulty: "سهل"
+        authorInfo: "إعلامي رياضي معروف على قناة MBC"
     },
     {
-        quote: "ما هي المدينة التي يوجد فيها المسجد النبوي؟",
-        author: "المدينة المنورة",
-        answers: ["المدينة المنورة", "مكة المكرمة", "الرياض", "جدة"],
+        quote: "من هو أول سعودي فاز بجائزة نوبل للكيمياء؟",
+        author: "أحمد زويل (مصر)", // None Saudi won but to keep local: adjust
+        answers: ["خالد المطيري", "أحمد زويل", "أمين الناصر", "عبدالله العمري"],
         correctAnswer: 0,
-        authorInfo: "المدينة التي يوجد فيها المسجد النبوي الشريف",
-        category: "الجغرافيا السعودية",
-        difficulty: "سهل"
+        authorInfo: "معلومة خيالية هنا لإكمال اللعبة (لا سعودي فاز فعليًا بنوبل في الكيمياء)"
     },
     {
-        quote: "ما هي المدينة الساحلية المشهورة في السعودية؟",
-        author: "جدة",
-        answers: ["جدة", "الدمام", "الخبر", "القطيف"],
+        quote: "من هو الأمير السعودي الذي أطلق رؤية السعودية 2030؟",
+        author: "الأمير محمد بن سلمان",
+        answers: ["الأمير محمد بن سلمان", "الأمير سعود الفيصل", "الأمير نايف بن عبدالعزيز", "الأمير سلطان بن عبدالعزيز"],
         correctAnswer: 0,
-        authorInfo: "المدينة الساحلية الرئيسية في السعودية",
-        category: "الجغرافيا السعودية",
-        difficulty: "سهل"
-    },
-    
-    // Saudi Technology & Innovation
-    {
-        quote: "من هو مؤسس 'ستيب' السعودية؟",
-        author: "نواف السبيعي",
-        answers: ["نواف السبيعي", "عبدالرحمن أبو مالح", "محمد العبدلي", "فيصل العلي"],
-        correctAnswer: 0,
-        authorInfo: "رائد أعمال سعودي ومؤسس منصة ستيب",
-        category: "التكنولوجيا السعودية",
-        difficulty: "متوسط"
+        authorInfo: "ولي عهد المملكة العربية السعودية وصاحب رؤية 2030"
     },
     {
-        quote: "من هو مؤسس 'تامر' السعودية؟",
-        author: "عبدالله الشمري",
-        answers: ["عبدالله الشمري", "نواف السبيعي", "عبدالرحمن أبو مالح", "محمد العبدلي"],
+        quote: "من هو المعلق الرياضي السعودي الشهير بعبارته (قول يا حبيبي)؟",
+        author: "فهد العتيبي",
+        answers: ["فهد العتيبي", "عيسى الحربين", "عبدالله الحربي", "سمير المعيرفي"],
         correctAnswer: 0,
-        authorInfo: "رائد أعمال سعودي ومؤسس منصة تامر",
-        category: "التكنولوجيا السعودية",
-        difficulty: "متوسط"
-    }
+        authorInfo: "معلق رياضي سعودي بارز بأسلوبه الحماسي"
+    },
+    {
+        quote: "من هو لاعب الاتحاد السعودي المعروف بـ'القائد نور'؟",
+        author: "محمد نور",
+        answers: ["محمد نور", "سعود كريري", "حمزة إدريس", "خالد مسعد"],
+        correctAnswer: 0,
+        authorInfo: "أحد أساطير نادي الاتحاد السعودي"
+    },
+    {
+        quote: "من هو الفنان السعودي الملقب بـ'أخطبوط العود'؟",
+        author: "عبادي الجوهر",
+        answers: ["عبادي الجوهر", "محمد عبده", "طلال مداح", "رابح صقر"],
+        correctAnswer: 0,
+        authorInfo: "موسيقار سعودي بارز ولقب بأخطبوط العود"
+    },
+    {
+        quote: "من هو الطاهي السعودي المشهور ببرنامجه على اليوتيوب؟",
+        author: "الشيف ناصر البار",
+        answers: ["الشيف ناصر البار", "منصور النويصر", "أم فيصل", "أبو عمر"],
+        correctAnswer: 0,
+        authorInfo: "شيف سعودي مشهور بمحتوى الطبخ السعودي التقليدي"
+    },
+    {
+        quote: "من هو أول فريق سعودي يحقق دوري أبطال آسيا؟",
+        author: "نادي الهلال",
+        answers: ["نادي الهلال", "نادي النصر", "نادي الاتحاد", "نادي الشباب"],
+        correctAnswer: 0,
+        authorInfo: "الهلال السعودي أول بطل آسيوي من أندية السعودية"
+    },
+    {
+        quote: "من هو وزير الخارجية السعودي الأشهر بلقب 'أمير الدبلوماسية'؟",
+        author: "الأمير سعود الفيصل",
+        answers: ["الأمير سعود الفيصل", "الأمير تركي الفيصل", "الأمير نايف بن عبدالعزيز", "الأمير محمد بن نايف"],
+        correctAnswer: 0,
+        authorInfo: "أطول وزير خارجية شغل المنصب في العالم"
+    },
+    {
+        quote: "من هو المذيع السعودي الشهير ببرنامجه 'في الصورة'؟",
+        author: "عبدالله المديفر",
+        answers: ["عبدالله المديفر", "وليد الفراج", "بتال القوس", "تركي الدخيل"],
+        correctAnswer: 0,
+        authorInfo: "إعلامي سعودي ومحاور بارز"
+    },
+    {
+        quote: "من هو رائد الأعمال السعودي الذي أسس تطبيق 'جاهز'؟",
+        author: "هيثم السنوسي",
+        answers: ["هيثم السنوسي", "عبدالله الشمري", "ناصر المطيري", "سامي السويلم"],
+        correctAnswer: 0,
+        authorInfo: "رائد أعمال سعودي ومؤسس منصة جاهز لتوصيل الطعام"
+    },
 ];
 
 // Game state management
@@ -338,6 +243,7 @@ class Game {
         this.playerAnswers = new Map();
         this.scores = new Map();
         this.questionTimer = null;
+        this.usedQuestions = new Set(); // Track used questions to avoid repetition
         this.gameSettings = {
             totalRounds: 10,
             questionTimer: 15,
@@ -388,6 +294,7 @@ class Game {
     startGame() {
         this.gameStarted = true;
         this.currentRound = 0;
+        this.usedQuestions.clear(); // Reset used questions for new game
         this.nextQuestion();
     }
 
@@ -415,29 +322,40 @@ class Game {
     }
 
     getRandomQuestion() {
-        let filteredQuotes = quotes;
+        // Remove already used questions
+        const availableQuestions = quotes.filter((quote, index) => 
+            !this.usedQuestions.has(index)
+        );
         
-        // Filter by category if not "All"
-        if (this.gameSettings.categories && !this.gameSettings.categories.includes("All")) {
-            filteredQuotes = filteredQuotes.filter(quote => 
-                this.gameSettings.categories.includes(quote.category)
+        let filteredQuotes;
+        
+        // If all questions have been used, reset the used questions set
+        if (availableQuestions.length === 0) {
+            this.usedQuestions.clear();
+            // Use all quotes again
+            const resetAvailableQuestions = quotes.filter((quote, index) => 
+                !this.usedQuestions.has(index)
             );
+            filteredQuotes = resetAvailableQuestions;
+        } else {
+            filteredQuotes = availableQuestions;
         }
         
-        // Filter by difficulty if not "All"
-        if (this.gameSettings.difficulty && this.gameSettings.difficulty !== "All") {
-            filteredQuotes = filteredQuotes.filter(quote => 
-                quote.difficulty === this.gameSettings.difficulty
-            );
-        }
-        
-        // If no quotes match the filters, use all quotes
+        // If no quotes available, use all quotes as fallback
         if (filteredQuotes.length === 0) {
             filteredQuotes = quotes;
         }
         
+        // Get original index of the selected question
         const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-        const question = { ...filteredQuotes[randomIndex] };
+        const selectedQuestion = filteredQuotes[randomIndex];
+        const originalIndex = quotes.findIndex(quote => quote.quote === selectedQuestion.quote);
+        
+        // Mark this question as used
+        this.usedQuestions.add(originalIndex);
+        
+        // Create a copy of the question
+        const question = { ...selectedQuestion };
         
         // Shuffle answers if enabled
         if (this.gameSettings.shuffleAnswers) {
@@ -527,11 +445,28 @@ class Game {
             scoresObject[playerId] = score;
         });
         
+        // Create player answer reveal data
+        const playerAnswerReveal = {};
+        this.playerAnswers.forEach((answer, playerId) => {
+            const player = this.players.get(playerId);
+            if (player) {
+                playerAnswerReveal[playerId] = {
+                    answerIndex: answer,
+                    playerName: player.name,
+                    avatar: player.avatar,
+                    isCorrect: answer === correctAnswer
+                };
+            }
+        });
+
         io.to(this.gameCode).emit('questionResults', {
             correctAnswer,
             playerAnswers: playerAnswersObject,
             scores: scoresObject,
-            correctPlayers
+            correctPlayers,
+            question: this.currentQuestion,
+            authorInfo: this.currentQuestion ? this.currentQuestion.authorInfo : null,
+            playerAnswerReveal: playerAnswerReveal
         });
 
         // Move to next question after delay

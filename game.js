@@ -176,6 +176,7 @@ class GameState {
         this.timer = null;
         this.timeLeft = 15;
         this.soundManager = new SoundManager();
+        this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         this.gameSettings = {
             totalRounds: 10,
             questionTimer: 15,
@@ -586,6 +587,74 @@ class GameState {
         }, 3000);
     }
 
+    showAuthorInfo(author, authorInfo) {
+        console.log('showAuthorInfo called with:', author, authorInfo);
+        
+        // Create author info display
+        const authorInfoContainer = document.createElement('div');
+        authorInfoContainer.className = 'author-info-display';
+        authorInfoContainer.innerHTML = `
+            <div class="author-info-content">
+                <h3>الإجابة الصحيحة: ${author}</h3>
+                <p class="author-info-text">${authorInfo}</p>
+            </div>
+        `;
+        
+        // Add to the game content area
+        const gameContent = document.querySelector('.game-content');
+        console.log('Game content element:', gameContent);
+        
+        if (gameContent) {
+            gameContent.appendChild(authorInfoContainer);
+            
+            // Remove after 3 seconds (same as question results)
+            setTimeout(() => {
+                if (authorInfoContainer.parentNode) {
+                    authorInfoContainer.parentNode.removeChild(authorInfoContainer);
+                }
+            }, 3000);
+        } else {
+            console.error('Game content element not found!');
+        }
+    }
+
+    displayAuthorInfoInGame(data) {
+        if (data.authorInfo && data.question) {
+            // Find or create author info display in the question area
+            let authorInfoDiv = document.getElementById('author-info-display');
+            if (!authorInfoDiv) {
+                authorInfoDiv = document.createElement('div');
+                authorInfoDiv.id = 'author-info-display';
+                authorInfoDiv.className = 'author-info-simple';
+                
+                // Insert after the question text
+                const questionDisplay = document.querySelector('.question-display');
+                if (questionDisplay) {
+                    questionDisplay.appendChild(authorInfoDiv);
+                }
+            }
+            
+            authorInfoDiv.innerHTML = `
+                <div class="author-info-simple-content">
+                    <h4>الإجابة الصحيحة: ${data.question.author}</h4>
+                    <p>${data.authorInfo}</p>
+                </div>
+            `;
+            
+            // Show the info
+            authorInfoDiv.style.display = 'block';
+            authorInfoDiv.style.opacity = '1';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                authorInfoDiv.style.opacity = '0';
+                setTimeout(() => {
+                    authorInfoDiv.style.display = 'none';
+                }, 500);
+            }, 3000);
+        }
+    }
+
     // Lobby UI Updates
     updateLobbyUI() {
         this.updateGameCode();
@@ -855,6 +924,55 @@ class GameState {
         const correctIndex = data.correctAnswer;
         const playerAnswer = data.playerAnswers[this.socket.id];
         
+        // Clear previous player avatars from answers
+        answers.forEach(answer => {
+            // Remove any existing player avatars
+            const existingAvatars = answer.querySelectorAll('.player-avatar-container');
+            existingAvatars.forEach(avatar => avatar.remove());
+        });
+        
+        // Show player answer reveals
+        if (data.playerAnswerReveal) {
+            // Group players by answer index
+            const playersByAnswer = {};
+            Object.values(data.playerAnswerReveal).forEach(playerData => {
+                if (!playersByAnswer[playerData.answerIndex]) {
+                    playersByAnswer[playerData.answerIndex] = [];
+                }
+                playersByAnswer[playerData.answerIndex].push(playerData);
+            });
+
+            // Create avatar containers for each answer
+            Object.keys(playersByAnswer).forEach(answerIndex => {
+                const answerElement = answers[answerIndex];
+                if (answerElement) {
+                    const avatarContainer = document.createElement('div');
+                    avatarContainer.className = 'player-avatar-container';
+                    
+                    // Add all players who chose this answer
+                    playersByAnswer[answerIndex].forEach(playerData => {
+                        const playerItem = document.createElement('div');
+                        playerItem.className = 'player-avatar-item';
+                        
+                        const avatar = document.createElement('span');
+                        avatar.className = `player-avatar ${playerData.isCorrect ? 'correct-player' : 'incorrect-player'}`;
+                        avatar.textContent = playerData.avatar;
+                        avatar.title = playerData.playerName;
+                        
+                        const playerName = document.createElement('span');
+                        playerName.className = 'player-avatar-name';
+                        playerName.textContent = playerData.playerName;
+                        
+                        playerItem.appendChild(avatar);
+                        playerItem.appendChild(playerName);
+                        avatarContainer.appendChild(playerItem);
+                    });
+                    
+                    answerElement.appendChild(avatarContainer);
+                }
+            });
+        }
+        
         answers.forEach((answer, index) => {
             answer.classList.remove('selected');
             if (index === correctIndex) {
@@ -863,6 +981,16 @@ class GameState {
                 answer.classList.add('incorrect');
             }
         });
+        
+        // Display author info if available
+        if (data.authorInfo && data.question) {
+            console.log('Calling showAuthorInfo with:', data.question.author, data.authorInfo);
+            this.showAuthorInfo(data.question.author, data.authorInfo);
+        } else {
+        }
+        
+        // Also show author info in the game area as a simpler approach
+        this.displayAuthorInfoInGame(data);
         
         // Play appropriate sound based on answer correctness
         if (playerAnswer === correctIndex) {
@@ -1341,4 +1469,47 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Game reaction events are handled by the general reaction event listener above
+    
+    // Mobile optimizations
+    if (game.isMobile) {
+        // Prevent double-tap zoom
+        document.addEventListener('touchend', (e) => {
+            if (e.target.closest('.btn, .answer-option, .avatar-option')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Handle mobile keyboard
+        const viewport = document.querySelector('meta[name="viewport"]');
+        const originalContent = viewport.getAttribute('content');
+        
+        document.addEventListener('focusin', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            }
+        });
+
+        document.addEventListener('focusout', () => {
+            viewport.setAttribute('content', originalContent);
+        });
+        
+        // Add haptic feedback for supported devices
+        const addHapticFeedback = (element) => {
+            element.addEventListener('touchstart', () => {
+                if (navigator.vibrate) {
+                    navigator.vibrate(30); // Short vibration
+                }
+            });
+        };
+
+        // Add to all interactive elements
+        document.querySelectorAll('.btn, .answer-option, .avatar-option').forEach(addHapticFeedback);
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 100);
+        });
+    }
 });
