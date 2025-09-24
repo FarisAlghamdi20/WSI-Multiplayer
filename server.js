@@ -16,7 +16,35 @@ const io = socketIo(server, {
     allowEIO3: true
 });
 
-// Serve static files
+// Mobile detection middleware
+function isMobile(req) {
+    const userAgent = req.headers['user-agent'] || '';
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+}
+
+// Main route - serve mobile or desktop based on device (MUST be before static middleware)
+app.get('/', (req, res) => {
+    const userAgent = req.headers['user-agent'] || '';
+    const mobile = isMobile(req);
+    
+    console.log(`User-Agent: ${userAgent}`);
+    console.log(`Is Mobile: ${mobile}`);
+    
+    if (mobile) {
+        console.log('Serving mobile version');
+        res.sendFile(path.join(__dirname, 'mobile.html'));
+    } else {
+        console.log('Serving desktop version');
+        res.sendFile(path.join(__dirname, 'index.html'));
+    }
+});
+
+// Explicit desktop route
+app.get('/desktop', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Serve static files (after main route)
 app.use(express.static(path.join(__dirname)));
 
 // Game data with categories and difficulty levels - Fun Saudi Arabia Content - Updated

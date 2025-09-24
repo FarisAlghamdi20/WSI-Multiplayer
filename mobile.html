@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>من قالها؟ - النسخة المحمولة</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    <link rel="stylesheet" href="mobile-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="mobile-app">
+        <!-- Mobile Home Screen -->
+        <div id="mobile-home" class="mobile-screen active">
+            <div class="mobile-container">
+                <!-- Header -->
+                <header class="mobile-header">
+                    <div class="retro-title">
+                        <span class="title-text">من قالها؟</span>
+                        <div class="question-mark-icon">❓</div>
+                    </div>
+                    <p class="subtitle-text">لعبة الأقوال الشهيرة</p>
+                </header>
+
+                <!-- Action Buttons -->
+                <div class="mobile-actions">
+                    <button id="mobileCreateBtn" class="retro-btn primary-btn">
+                        <span class="btn-icon">🎮</span>
+                        <span class="btn-text">إنشاء غرفة</span>
+                    </button>
+                    
+                    <button id="mobileJoinBtn" class="retro-btn secondary-btn">
+                        <span class="btn-icon">🔗</span>
+                        <span class="btn-text">انضمام لغرفة</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Create Room Modal -->
+        <div id="mobileCreateModal" class="mobile-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>إنشاء غرفة جديدة</h2>
+                    <button id="closeMobileCreateModal" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label>اسمك</label>
+                        <input type="text" id="mobilePlayerName" placeholder="أدخل اسمك" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <label>اختر صورتك الرمزية</label>
+                        <div class="avatar-grid">
+                            <div class="avatar-option" data-avatar="🎮">🎮</div>
+                            <div class="avatar-option" data-avatar="🎯">🎯</div>
+                            <div class="avatar-option" data-avatar="🎪">🎪</div>
+                            <div class="avatar-option" data-avatar="🎨">🎨</div>
+                            <div class="avatar-option" data-avatar="🎭">🎭</div>
+                            <div class="avatar-option" data-avatar="🎸">🎸</div>
+                        </div>
+                    </div>
+                    <button id="mobileCreateConfirm" class="retro-btn primary-btn">إنشاء الغرفة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Join Room Modal -->
+        <div id="mobileJoinModal" class="mobile-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>انضمام لغرفة</h2>
+                    <button id="closeMobileJoinModal" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label>رمز الغرفة</label>
+                        <input type="text" id="mobileGameCode" placeholder="أدخل الرمز" maxlength="6">
+                    </div>
+                    <div class="input-group">
+                        <label>اسمك</label>
+                        <input type="text" id="mobileJoinPlayerName" placeholder="أدخل اسمك" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <label>اختر صورتك الرمزية</label>
+                        <div class="avatar-grid">
+                            <div class="avatar-option" data-avatar="🎮">🎮</div>
+                            <div class="avatar-option" data-avatar="🎯">🎯</div>
+                            <div class="avatar-option" data-avatar="🎪">🎪</div>
+                            <div class="avatar-option" data-avatar="🎨">🎨</div>
+                            <div class="avatar-option" data-avatar="🎭">🎭</div>
+                            <div class="avatar-option" data-avatar="🎸">🎸</div>
+                        </div>
+                    </div>
+                    <button id="mobileJoinConfirm" class="retro-btn primary-btn">انضمام للغرفة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Lobby Screen -->
+        <div id="mobile-lobby" class="mobile-screen">
+            <div class="mobile-container">
+                <header class="lobby-header">
+                    <div class="room-info">
+                        <h2>غرفة اللعبة</h2>
+                        <div class="room-code">
+                            <span>الرمز: </span>
+                            <span id="mobileRoomCode" class="code-display"></span>
+                            <button id="mobileCopyCode" class="retro-btn small-btn">نسخ</button>
+                        </div>
+                    </div>
+                    <div class="player-count">
+                        <span id="mobilePlayerCount">1</span> / 8 لاعبين
+                    </div>
+                </header>
+
+                <div class="players-section">
+                    <h3>اللاعبون</h3>
+                    <div id="mobilePlayersList" class="players-grid">
+                        <!-- Players will be added here -->
+                    </div>
+                </div>
+
+                <div class="lobby-actions">
+                    <button id="mobileReadyBtn" class="retro-btn primary-btn">جاهز</button>
+                    <button id="mobileStartBtn" class="retro-btn success-btn" disabled>بدء اللعبة</button>
+                    <button id="mobileLeaveBtn" class="retro-btn danger-btn">مغادرة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Game Screen -->
+        <div id="mobile-game" class="mobile-screen">
+            <div class="mobile-container">
+                <header class="game-header">
+                    <div class="question-counter">
+                        سؤال <span id="mobileCurrentQuestion">1</span> من <span id="mobileTotalQuestions">10</span>
+                    </div>
+                    <div class="timer-display">
+                        <span id="mobileTimer">15</span>s
+                    </div>
+                </header>
+
+                <div class="question-box">
+                    <div class="question-text" id="mobileQuoteText">
+                        "جاري تحميل السؤال..."
+                    </div>
+                </div>
+
+                <div class="answer-options" id="mobileAnswersList">
+                    <!-- Answer options will be added here -->
+                </div>
+
+                <div class="game-info">
+                    <div class="score-display">
+                        <span>نقاطك: </span>
+                        <span id="mobilePlayerScore">0</span>
+                    </div>
+                    <button id="mobileGameLeaveBtn" class="retro-btn danger-btn small-btn">مغادرة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Results Screen -->
+        <div id="mobile-results" class="mobile-screen">
+            <div class="mobile-container">
+                <header class="results-header">
+                    <h2>نتائج الجولة</h2>
+                </header>
+
+                <div class="correct-answer-box">
+                    <h3>الإجابة الصحيحة</h3>
+                    <div class="answer-reveal">
+                        <div class="author-name" id="mobileCorrectAuthor"></div>
+                        <div class="author-info" id="mobileAuthorInfo"></div>
+                    </div>
+                </div>
+
+                <div class="scoreboard">
+                    <h3>النتائج</h3>
+                    <div id="mobileScoreboard" class="scoreboard-list">
+                        <!-- Scores will be added here -->
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button id="mobileNextQuestionBtn" class="retro-btn primary-btn">السؤال التالي</button>
+                    <button id="mobileBackToLobbyBtn" class="retro-btn secondary-btn">العودة للغرفة</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Game Over Screen -->
+        <div id="mobile-game-over" class="mobile-screen">
+            <div class="mobile-container">
+                <header class="game-over-header">
+                    <h2>انتهت اللعبة!</h2>
+                    <div class="winner-announcement">
+                        <div class="winner-name" id="mobileWinnerName"></div>
+                        <div class="winner-score" id="mobileWinnerScore"></div>
+                    </div>
+                </header>
+
+                <div class="final-leaderboard">
+                    <h3>الترتيب النهائي</h3>
+                    <div id="mobileFinalLeaderboard" class="leaderboard-list">
+                        <!-- Final leaderboard will be added here -->
+                    </div>
+                </div>
+
+                <div class="game-over-actions">
+                    <button id="mobilePlayAgainBtn" class="retro-btn primary-btn">العب مرة أخرى</button>
+                    <button id="mobileNewGameBtn" class="retro-btn secondary-btn">لعبة جديدة</button>
+                    <button id="mobileExitBtn" class="retro-btn danger-btn">خروج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Loading Overlay -->
+    <div id="mobileLoadingOverlay" class="mobile-loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>جاري الاتصال...</p>
+    </div>
+
+    <!-- Mobile Toast Notifications -->
+    <div id="mobileToastContainer" class="mobile-toast-container"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="mobile-game.js"></script>
+</body>
+</html>

@@ -163,6 +163,12 @@ body::after {
     -webkit-overflow-scrolling: touch;
 }
 
+/* Center content for landing screen */
+#landing {
+    align-items: center;
+    justify-content: center;
+}
+
 .screen.active {
     display: flex;
 }
